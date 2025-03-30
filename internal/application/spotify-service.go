@@ -93,6 +93,12 @@ func (s *SpotifyService) PrintInfoOfList() {
 		fmt.Printf("\nAlbum: %s\n", track.Album.Name)
 		fmt.Printf("Release Date: %s\n", track.Album.ReleaseDate)
 		fmt.Printf("Popularity: %d\n", track.Popularity)
+		if track.PreviewURL != "" {
+			fmt.Printf("Picture: %s\n", track.PreviewURL)
+		}
+		if track.Album.Images[1].URL != "" {
+			fmt.Println(track.Album.Images[1].URL)
+		}
 		fmt.Println("-------------------------------------------------")
 	}
 }

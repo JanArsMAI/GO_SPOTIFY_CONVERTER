@@ -1,30 +1,4 @@
-package htmlconvertor
-
-import (
-	"fmt"
-	"os"
-	entity "spotifyparser/internal/domain/track/entity"
-	"strings"
-)
-
-func formatDuration(durationMs int) string {
-	totalSeconds := durationMs / 1000
-	minutes := totalSeconds / 60
-	seconds := totalSeconds % 60
-	return fmt.Sprintf("%02d:%02d", minutes, seconds)
-}
-
-func formatData(data string) string {
-	return strings.Split(data, "-")[0]
-}
-
-func ConvertTracksToHTML(filename string, tracks []entity.Track) error {
-	file, err := os.Create(filename)
-	if err != nil {
-		return fmt.Errorf("не удалось создать файл: %v", err)
-	}
-	defer file.Close()
-	_, err = file.WriteString(`<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -48,7 +22,7 @@ func ConvertTracksToHTML(filename string, tracks []entity.Track) error {
             margin-top: 0;
         }
         .track {
-            width: 80%;
+            width: 40%;
             display: flex;
             align-items: center;
             background-color: #fff;
@@ -68,9 +42,11 @@ func ConvertTracksToHTML(filename string, tracks []entity.Track) error {
             flex-direction: column;
             justify-content: center;
             flex-basis: 40%;
+            background-color: aqua;
         }
         .track-album{
             width: 40%;
+            background-color: blueviolet;
         }
         .track-title {
             font-size: 18px;
@@ -92,33 +68,15 @@ func ConvertTracksToHTML(filename string, tracks []entity.Track) error {
 </head>
 <body>
     <h1>Название</h1>
-`)
-	if err != nil {
-		return fmt.Errorf("ошибка при записи в файл: %v", err)
-	}
-	for _, track := range tracks {
-		trackInfo := fmt.Sprintf(`
     <div class="track">
-        <img class="track-cover" src="%s">
+        <img class="track-cover" href="">
         <div class="track-info">
-            <div class="track-title">%s</div>
-            <div class="track-artist">%s</div>
+            <div class="track-title">TrackName</div>
+            <div class="track-artist">NameNigger</div>
         </div>
-        <div class="track-album">%s</div>
-        <div class="track-year">%s</div>
-        <div class="track-duration">%s</div>
-    </div>`,
-			track.Album.Images[1].URL, track.Name, track.Artists[0].Name, track.Album.Name, formatData(track.Album.ReleaseDate), formatDuration(track.DurationMs))
-		_, err = file.WriteString(trackInfo)
-		if err != nil {
-			return fmt.Errorf("ошибка при записи в файл: %v", err)
-		}
-	}
-	_, err = file.WriteString(`
+        <div class="track-album">Album</div>
+        <div class="track-year">Year</div>
+        <div class="track-duration">Duration</div>
+    </div>
 </body>
-</html>`)
-	if err != nil {
-		return fmt.Errorf("ошибка при записи в файл: %v", err)
-	}
-	return nil
-}
+</html>
