@@ -13,6 +13,13 @@ func formatDuration(durationMs int) string {
 	seconds := totalSeconds % 60
 	return fmt.Sprintf("%02d:%02d", minutes, seconds)
 }
+func getArtists(track *entity.Track) string {
+	ans := ""
+	for _, artist := range track.Artists {
+		ans += artist.Name + ", "
+	}
+	return ans[:len(ans)-2]
+}
 
 func formatData(data string) string {
 	return strings.Split(data, "-")[0]
@@ -28,33 +35,36 @@ func ConvertTracksToHTML(filename string, tracks []entity.Track) error {
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
     <title>Название</title>
     <style>
         body {
             padding: 0;
-            font-family: Arial, sans-serif;
-            background: rgba(0, 0, 0, 0.90);
+            font-family: Arial , sans-serif;
+            background: #212121;
             margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
         h1 {
-            color: #fff;
+            color: #d9faf7;
             text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9);
             text-align: center;
             width: 100%;
-            margin-bottom: 0;
-            margin-top: 0;
+            margin-bottom: 15px;
+            margin-top: 15px;
+            font-family: 'Montserrat', sans-serif;
         }
         .track {
-            width: 80%;
+            width: 70%;
             display: flex;
             align-items: center;
-            background-color: #fff;
+            background-color: #323232;
             margin-bottom: 10px;
             padding: 10px;
             border-radius: 5px;
+            text-shadow: 0 0 5px #0d7377;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         }
         .track-cover {
@@ -71,22 +81,25 @@ func ConvertTracksToHTML(filename string, tracks []entity.Track) error {
         }
         .track-album{
             width: 40%;
+            color:#d9faf7;
         }
         .track-title {
             font-size: 18px;
             font-weight: bold;
+            color:#d9faf7;
         }
         .track-artist {
             font-size: 14px;
-            color: #555;
+            color: #d9faf7;
         }
         .track-duration {
             font-size: 14px;
-            color: #555;
+            color: #d9faf7;
             margin-left: 0;
         }
         .track-year{
             width: 10%;
+            color: #d9faf7;
         }
     </style>
 </head>
@@ -108,7 +121,7 @@ func ConvertTracksToHTML(filename string, tracks []entity.Track) error {
         <div class="track-year">%s</div>
         <div class="track-duration">%s</div>
     </div>`,
-			track.Album.Images[1].URL, track.Name, track.Artists[0].Name, track.Album.Name, formatData(track.Album.ReleaseDate), formatDuration(track.DurationMs))
+			track.Album.Images[1].URL, track.Name, getArtists(&track), track.Album.Name, formatData(track.Album.ReleaseDate), formatDuration(track.DurationMs))
 		_, err = file.WriteString(trackInfo)
 		if err != nil {
 			return fmt.Errorf("ошибка при записи в файл: %v", err)
